@@ -1,44 +1,80 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#Trabalho de Administração de Redes de Computadores
-#By: Nikolas de Hor
-
 Vagrant.configure("2") do |config|
-    # VM1 - Servidor Web
-    config.vm.define "vm1" do |vm1|
-        vm1.vm.box = "gusztavvargadr/ubuntu-server"  
-        vm1.vm.network "private_network", ip: "192.168.56.10"
-        vm1.vm.provision "shell",inline: <<-SHELL 
-            sudo apt update
-            sudo apt install apache2 -y
-            sudo ip route delete default
-            sudo route add default gw 192.168.56.12
-        SHELL
-        vm1.vm.synced_folder ".", "/var/www/html"
-    end
+
+# VM 1 Gateway
+  config.vm.box = "ubuntu/focal64"
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+  config.vm.define "gateway-vm" do |gateway|
     
-    # VM2 - Servidor de Banco de Dados
-    config.vm.define "vm2" do |vm2|
-        vm2.vm.box = "gusztavvargadr/ubuntu-server"
-        vm2.vm.network "private_network", ip: "192.168.56.11" 
-        vm2.vm.provision "shell",inline: <<-SHELL
-            sudo apt update
-            sudo apt install mysql-server -y
-            sudo ip route delete default
-            sudo route add default gw 192.168.56.12
-        SHELL
-    end
+    gateway.vm.network "private_network", ip: "192.168.56.14"
     
-    # VM3 - Gateway de Rede
-    config.vm.define "vm3" do |vm3|
-        vm3.vm.box = "gusztavvargadr/ubuntu-server"
-        vm3.vm.network "private_network", ip: "192.168.56.12"
-        vm3.vm.network "public_network", type: "dhcp"
-        vm3.vm.provision "shell",inline: <<-SHELL
-            sudo apt update
-            sudo sysctl -w net.ipv4.ip_forward=1
-            sudo iptables -t nat -A POSTROUTING -j MASQUERADE 
-        SHELL
-    end
+    gateway.vm.network "public_network", type: "dhcp", bridge: "wlp3s0"
+    
+    gateway.vm.synced_folder "./shared_folder", "/vagrant_shared"
+
+    gateway.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get -y install net-tools
+      sudo sysctl -w net.ipv4.ip_forward=1
+      sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+    SHELL
+  end
+      
+# VM 2 Servidor Web
+  config.vm.box = "ubuntu/focal64"
+      
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+    
+  config.vm.define "servidor-web-vm" do |web|
+    
+    web.vm.network "private_network", ip: "192.168.56.15"
+  
+    web.vm.synced_folder "/var/www/html", "/var/www/html"
+  
+    web.vm.network "forwarded_port", guest: 81, host: 8080
+
+    web.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install -y apache2
+      apt-get install -y net-tools
+      sudo ip route del default
+      sudo route add default gw 192.168.56.14
+      sudo echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    SHELL
+  end
+
+# VM 3 Servidor BD
+  config.vm.box = "ubuntu/focal64"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+    
+  config.vm.define "servidor-bd-vm" do |banco|
+
+    banco.vm.network "private_network", ip: "192.168.56.16"
+    
+    banco.vm.synced_folder "./shared_folder", "/vagrant_shared"
+  
+    banco.vm.network "forwarded_port", guest: 81, host: 8081
+
+    banco.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install -y mysql-server mysql-client libmysqlclient-dev
+      apt-get install -y net-tools
+      sudo ip route del default
+      sudo route add default gw 192.168.56.14
+      sudo echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    SHELL
+  end
 end
