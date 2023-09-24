@@ -31,7 +31,7 @@ vagrant ssh nome-da-vm
 
 #Por exemplo, para acessar a VM do Servidor Web:
 
-vagrant ssh servidor-web
+vagrant ssh servidor-web-vm
 
 #Passo 4: Teste a Comunicação
 
@@ -39,11 +39,11 @@ Você pode testar a comunicação entre as VMs seguindo estas etapas:
 
 #Na VM Servidor Web, abra um terminal:
 
-vagrant ssh servidor-web
+vagrant ssh servidor-web-vm
 
 #Na VM Servidor de Banco de Dados, abra um terminal:
 
-vagrant ssh servidor-bd
+vagrant ssh servidor-bd-vm
 
 #Tente fazer ping de uma VM para a outra usando seus endereços IP privados:
 
