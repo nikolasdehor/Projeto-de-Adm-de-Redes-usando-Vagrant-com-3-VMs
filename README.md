@@ -1,90 +1,74 @@
-#Laboratório de Redes com Vagrant
+# Configuração de Rede no Vagrant
 
-#Este é um laboratório de redes automatizado criado com o Vagrant, que consiste em três máquinas virtuais (VMs): Servidor Web, Servidor de Banco de Dados e Gateway. O objetivo deste ambiente é criar um ambiente de laboratório onde VM1 e VM2 podem se comunicar através da rede privada e VM3 atua como um gateway, fornecendo acesso à Internet para VM1 e VM2 através de sua interface de rede pública.
-Requisitos
+Este documento descreve o processo de configuração e as configurações de rede para um ambiente de laboratório usando o Vagrant. O ambiente consiste em três máquinas virtuais (VMs) que se comunicam entre si e têm acesso à Internet por meio de uma VM de gateway.
 
-#Para executar este laboratório, você precisará ter as seguintes ferramentas instaladas em sua máquina:
+## Pré-requisitos
 
--Vagrant
--VirtualBox ou outro provedor de VMs compatível com o Vagrant
+Certifique-se de ter o Vagrant e o VirtualBox instalados no seu sistema.
 
-#Configuração do Ambiente
-#Passo 1: Clone o Repositório
+## Configuração das Máquinas Virtuais
 
-#Clone este repositório para sua máquina local usando o seguinte comando:
+As VMs são configuradas no arquivo `Vagrantfile`. Cada VM tem suas próprias configurações de rede e provisionamento.
 
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+### VM1 - Gateway
 
-#Passo 2: Inicialize as VMs
+- **Sistema Operacional:** Ubuntu Server 20.04 LTS
+- **Interface de Rede 1 (eth0):** IP Privado Estático (192.168.56.17)
+- **Interface de Rede 2 (eth1):** IP Público DHCP
+- **Função:** Gateway de Rede
+- **Pasta Compartilhada:** `/vagrant_shared` na máquina host compartilhada com `./shared_folder` na VM1.
 
-#Para iniciar as VMs, basta executar o seguinte comando na raiz do projeto:
+### VM2 - Servidor Web
 
-vagrant up
+- **Sistema Operacional:** Ubuntu Server 20.04 LTS
+- **Interface de Rede:** IP Privado Estático (192.168.56.18)
+- **Função:** Servidor Web (instalação do Apache)
+- **Pasta Compartilhada:** `/var/www/html` na máquina host compartilhada com `/var/www/html` na VM2.
 
-#Este comando criará e configurará as VMs de acordo com as especificações fornecidas no arquivo Vagrantfile. Os scripts de provisionamento estão localizados na pasta provision e são executados automaticamente durante o processo de inicialização.
-#Passo 3: Acesse as VMs
+### VM3 - Servidor de Banco de Dados
 
-#Depois que as VMs estiverem em execução, você pode acessá-las usando o seguinte comando:
+- **Sistema Operacional:** Ubuntu Server 20.04 LTS
+- **Interface de Rede:** IP Privado Estático (192.168.56.19)
+- **Função:** Servidor de Banco de Dados (instalação do MySQL)
+- **Pasta Compartilhada:** `/vagrant_shared` na máquina host compartilhada com `./shared_folder` na VM3.
 
-vagrant ssh nome-da-vm
+## Configuração de Rede
 
-#Por exemplo, para acessar a VM do Servidor Web:
+A configuração de rede é definida no arquivo `Vagrantfile` usando o Vagrant. As interfaces de rede privadas e públicas são especificadas, bem como os endereços IP estáticos, a interface de rede do gateway e as pastas compartilhadas.
 
-vagrant ssh servidor-web-vm
+## Procedimento de Configuração
 
-#Passo 4: Teste a Comunicação
+1. Clone o repositório com o arquivo `Vagrantfile`.
 
-Você pode testar a comunicação entre as VMs seguindo estas etapas:
+   `git clone https://github.com/seu-usuario/seu-repositorio.git`
+   `cd seu-repositorio`
 
-#Na VM Servidor Web, abra um terminal:
+2. Inicie as VMs com o comando `vagrant up`.
 
-vagrant ssh servidor-web-vm
+   `vagrant up`
 
-#Na VM Servidor de Banco de Dados, abra um terminal:
+3. Acesse cada VM usando `vagrant ssh` e execute os testes de conectividade, conforme necessário.
 
-vagrant ssh servidor-bd-vm
+4. Para interromper as VMs, use o comando `vagrant halt`.
 
-#Tente fazer ping de uma VM para a outra usando seus endereços IP privados:
+   `vagrant halt`
 
-ping IP_DA_OUTRA_VM
+## Testes de Conectividade
 
-#Por exemplo, para fazer ping do Servidor Web para o Servidor de Banco de Dados:
+Após iniciar as VMs, você pode executar os seguintes testes de conectividade:
 
-ping 192.168.56.17, 192.168.56.18, 192.168.56.19
+- De VM1 para VM2: `ping 192.168.56.18`
+- De VM2 para VM1: `ping 192.168.56.17`
+- De VM3 para VM1 ou VM2: `ping 192.168.56.17` ou `ping 192.168.56.18`
+- Da VM1 ou VM2 para a Internet (via VM3): `ping google.com`
 
-#Passo 5: Acesso à Internet
+## Problemas e Soluções
 
-A VM Gateway está configurada para fornecer acesso à Internet para as VMs Servidor Web e Servidor de Banco de Dados. Certifique-se de que as VMs possam acessar a Internet através do Gateway.
-Estrutura de Rede
+Se você encontrar problemas de conectividade, verifique as configurações de rede no arquivo `Vagrantfile` e certifique-se de que as VMs foram inicializadas corretamente.
 
-#Aqui está a estrutura de rede das VMs:
+## Autor
 
-    VM Servidor Web:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.17)
-        Interface de Rede 2 (eth1): IP Público DHCP
+- Nikolas de Hor
+- madeira_clerigo_0@icloud.com
 
-    VM Servidor de Banco de Dados:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.18)
-        Interface de Rede 2 (eth1): IP Público DHCP
-
-    VM Gateway:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.19)
-        Interface de Rede 2 (eth1): IP Público DHCP
-
-#Personalização
-
-Você pode personalizar este ambiente de laboratório de acordo com suas necessidades específicas, adicionando ou removendo VMs, ajustando as configurações de rede ou provisionamento, e instalando os serviços desejados.
-Encerrando as VMs
-
-#Para desligar as VMs, execute o seguinte comando:
-
-vagrant halt
-
-#Para destruir completamente as VMs e liberar os recursos, execute o seguinte comando:
-
-vagrant destroy -f
-
-#Conclusão
-
-Este arquivo README fornece uma visão geral do laboratório de redes criado com o Vagrant. Você pode usá-lo como referência para configurar e personalizar seu próprio ambiente de laboratório de acordo com seus requisitos específicos. Certifique-se de ajustar e expandir conforme necessário.
+Lembre-se de personalizar este arquivo com as informações específicas do seu ambiente e suas preferências. Isso fornecerá um guia claro para configurar e gerenciar suas VMs usando o Vagrant.
