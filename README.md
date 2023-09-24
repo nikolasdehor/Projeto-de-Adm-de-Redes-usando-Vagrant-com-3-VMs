@@ -5,8 +5,8 @@ Requisitos
 
 #Para executar este laboratório, você precisará ter as seguintes ferramentas instaladas em sua máquina:
 
-Vagrant
-VirtualBox ou outro provedor de VMs compatível com o Vagrant
+-Vagrant
+-VirtualBox ou outro provedor de VMs compatível com o Vagrant
 
 #Configuração do Ambiente
 #Passo 1: Clone o Repositório
