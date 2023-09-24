@@ -1,0 +1,1 @@
+{"virtualbox":{"/var/www/html":{"guestpath":"/var/www/html","hostpath":"C:/var/www/html","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/nikol/OneDrive/Documentos/GitHub/Projeto-de-Administra--o-de-Redes-usando-Vagrant-com-3-VMs","disabled":false,"__vagrantfile":true}}}

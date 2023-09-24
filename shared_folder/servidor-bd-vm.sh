@@ -1,23 +1,17 @@
-#!/bin/bash
+# Script para VM Servidor de Banco de Dados (servidor-bd-vm)
 
-# Atualiza o sistema
+# Atualiza os pacotes
 sudo apt-get update
 
-# Instala o MySQL e as bibliotecas necessárias
-sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+# Instala o MySQL Server, MySQL Client e libmysqlclient-dev
+sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev
 
-# Instala net-tools
-sudo apt-get install -y net-tools
+# Instala o pacote net-tools
+sudo apt-get -y install net-tools
 
-# Remove a rota padrão
+# Remove a rota padrão e define um novo gateway
 sudo ip route del default
-
-# Adiciona uma nova rota padrão através do gateway
 sudo route add default gw 192.168.56.14
 
-# Configura o servidor DNS (usando o Google DNS como exemplo)
+# Configura o servidor DNS
 sudo echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-
-# Instala o pacote virtualbox-guest-utils
-sudo apt-get install -y virtualbox-guest-utils
-

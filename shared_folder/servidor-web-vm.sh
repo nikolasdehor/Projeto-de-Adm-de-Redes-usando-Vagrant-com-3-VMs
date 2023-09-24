@@ -1,20 +1,17 @@
-#!/bin/bash
+# Script para VM Servidor Web (servidor-web-vm)
 
-# Atualiza o sistema
+# Atualiza os pacotes
 sudo apt-get update
 
-# Instala o Apache
-sudo apt-get install -y apache2
+# Instala o Apache2
+sudo apt-get -y install apache2
 
-# Instala net-tools
-sudo apt-get install -y net-tools
+# Instala o pacote net-tools
+sudo apt-get -y install net-tools
 
-# Remove a rota padrão
+# Remove a rota padrão e define um novo gateway
 sudo ip route del default
-
-# Adiciona uma nova rota padrão através do gateway
 sudo route add default gw 192.168.56.14
 
-# Configura o servidor DNS (usando o Google DNS como exemplo)
+# Configura o servidor DNS
 sudo echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-

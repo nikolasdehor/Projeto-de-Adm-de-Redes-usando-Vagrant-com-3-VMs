@@ -51,7 +51,7 @@ ping IP_DA_OUTRA_VM
 
 #Por exemplo, para fazer ping do Servidor Web para o Servidor de Banco de Dados:
 
-ping 192.168.50.11
+ping 192.168.56.17, 192.168.56.18, 192.168.56.19
 
 #Passo 5: Acesso à Internet
 
@@ -61,15 +61,15 @@ Estrutura de Rede
 #Aqui está a estrutura de rede das VMs:
 
     VM Servidor Web:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.50.10)
+        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.17)
         Interface de Rede 2 (eth1): IP Público DHCP
 
     VM Servidor de Banco de Dados:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.50.11)
+        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.18)
         Interface de Rede 2 (eth1): IP Público DHCP
 
     VM Gateway:
-        Interface de Rede 1 (eth0): IP Privado Estático (192.168.50.12)
+        Interface de Rede 1 (eth0): IP Privado Estático (192.168.56.19)
         Interface de Rede 2 (eth1): IP Público DHCP
 
 #Personalização

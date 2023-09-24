@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#by: Nikolas de Hor
-
 Vagrant.configure("2") do |config|
 
 # VM 1 Gateway
@@ -14,7 +12,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.define "gateway-vm" do |gateway|
     
-    gateway.vm.network "private_network", ip: "192.168.56.14"
+    gateway.vm.network "private_network", ip: "192.168.56.17"
     
     gateway.vm.network "public_network", type: "dhcp", bridge: "wlp3s0"
     
@@ -38,7 +36,7 @@ Vagrant.configure("2") do |config|
     
   config.vm.define "servidor-web-vm" do |web|
     
-    web.vm.network "private_network", ip: "192.168.56.15"
+    web.vm.network "private_network", ip: "192.168.56.18"
   
     web.vm.synced_folder "/var/www/html", "/var/www/html"
   
@@ -64,7 +62,7 @@ Vagrant.configure("2") do |config|
     
   config.vm.define "servidor-bd-vm" do |banco|
 
-    banco.vm.network "private_network", ip: "192.168.56.16"
+    banco.vm.network "private_network", ip: "192.168.56.19"
     
     banco.vm.synced_folder "./shared_folder", "/vagrant_shared"
   
